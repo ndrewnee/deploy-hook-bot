@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -10,7 +9,6 @@ import (
 
 	"github.com/ndrewnee/deploy-hook-bot/bot"
 	"github.com/ndrewnee/deploy-hook-bot/config"
-	"github.com/ndrewnee/deploy-hook-bot/models"
 )
 
 func main() {
@@ -27,10 +25,10 @@ func main() {
 
 		log.Printf("Request body:\n%s", bytes)
 
-		var hook models.Hook
-		json.Unmarshal(bytes, &hook)
+		// var hook models.Hook
+		// json.Unmarshal(bytes, &hook)
 
-		tgbot.SendMessage(hook.Data.Description)
+		tgbot.SendMessage(string(bytes))
 	})
 
 	if err := http.ListenAndServe(config.Address, nil); err != nil {
