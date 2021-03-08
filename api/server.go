@@ -79,6 +79,8 @@ func (s *Server) HooksHandler(w http.ResponseWriter, r *http.Request) {
 
 func writeResponse(w http.ResponseWriter, status int, response models.HookResponse) {
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+
 	body, _ := json.Marshal(response)
 	_, _ = w.Write(body)
 }
