@@ -51,7 +51,7 @@ func (s *Server) Mux() *http.ServeMux {
 func (s *Server) HooksHandler(w http.ResponseWriter, r *http.Request) {
 	auth := r.Header.Get("Authorization")
 
-	if s.config.AuthToken != "" && auth != "Bearer "+s.config.AuthToken {
+	if s.config.AuthToken != "" && auth != s.config.AuthToken {
 		writeResponse(w, http.StatusForbidden, models.HookResponse{Error: "Authorization is invalid"})
 		return
 	}

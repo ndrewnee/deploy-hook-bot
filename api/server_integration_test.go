@@ -111,7 +111,7 @@ func TestServer_HooksHandler(t *testing.T) {
 
 			req.Header.Set("Content-Type", "application/json")
 			if tt.args.authToken != "" {
-				req.Header.Set("Authorization", "Bearer "+tt.args.authToken)
+				req.Header.Set("Authorization", tt.args.authToken)
 			}
 
 			response, err := http.DefaultClient.Do(req)
