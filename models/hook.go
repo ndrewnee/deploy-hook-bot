@@ -3,24 +3,19 @@ package models
 import "time"
 
 type (
-	Hook struct {
-		Action          string          `json:"action"`
-		Actor           Actor           `json:"actor"`
-		CreatedAt       time.Time       `json:"created_at"`
+	HookAPIBuild struct {
 		ID              string          `json:"id"`
-		Data            Data            `json:"data"`
-		PreviousData    PreviousData    `json:"previous_data"`
-		PublishedAt     time.Time       `json:"published_at"`
+		Action          string          `json:"action"`
+		Version         string          `json:"version"`
 		Resource        string          `json:"resource"`
 		Sequence        interface{}     `json:"sequence"`
+		CreatedAt       time.Time       `json:"created_at"`
 		UpdatedAt       time.Time       `json:"updated_at"`
-		Version         string          `json:"version"`
+		PublishedAt     time.Time       `json:"published_at"`
+		Actor           Actor           `json:"actor"`
+		Data            Data            `json:"data"`
+		PreviousData    PreviousData    `json:"previous_data"`
 		WebhookMetadata WebhookMetadata `json:"webhook_metadata"`
-	}
-
-	Actor struct {
-		Email string `json:"email"`
-		ID    string `json:"id"`
 	}
 
 	App struct {
@@ -28,26 +23,56 @@ type (
 		Name string `json:"name"`
 	}
 
+	Slug struct {
+		ID                string `json:"id"`
+		Commit            string `json:"commit"`
+		CommitDescription string `json:"commit_description"`
+	}
+
 	User struct {
-		Email string `json:"email"`
 		ID    string `json:"id"`
+		Email string `json:"email"`
+	}
+
+	Release struct {
+		ID      string `json:"id"`
+		Version int    `json:"version"`
+	}
+
+	Metadata struct{}
+
+	Buildpacks struct {
+		URL string `json:"url"`
+	}
+
+	SourceBlob struct {
+		URL      string `json:"url"`
+		Version  string `json:"version"`
+		Checksum string `json:"checksum"`
 	}
 
 	Data struct {
-		App         App       `json:"app"`
-		CreatedAt   time.Time `json:"created_at"`
-		Description string    `json:"description"`
-		Status      string    `json:"status"`
-		ID          string    `json:"id"`
-		Slug        string    `json:"slug"`
-		UpdatedAt   time.Time `json:"updated_at"`
-		User        User      `json:"user"`
-		Version     int       `json:"version"`
+		ID              string       `json:"id"`
+		App             App          `json:"app"`
+		Slug            Slug         `json:"slug"`
+		User            User         `json:"user"`
+		Stack           string       `json:"stack"`
+		Status          string       `json:"status"`
+		Release         Release      `json:"release"`
+		Metadata        Metadata     `json:"metadata"`
+		Buildpacks      []Buildpacks `json:"buildpacks"`
+		CreatedAt       time.Time    `json:"created_at"`
+		UpdatedAt       time.Time    `json:"updated_at"`
+		SourceBlob      SourceBlob   `json:"source_blob"`
+		OutputStreamURL string       `json:"output_stream_url"`
 	}
 
-	PreviousData struct {
-		Status string `json:"status"`
+	Actor struct {
+		ID    string `json:"id"`
+		Email string `json:"email"`
 	}
+
+	PreviousData struct{}
 
 	Attempt struct {
 		ID string `json:"id"`

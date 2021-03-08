@@ -103,6 +103,7 @@ func (b *Bot) SendMessage(text string) (tgbotapi.Message, error) {
 	chatID := int64(3923963)
 
 	msg := tgbotapi.NewMessage(chatID, text)
+	msg.ParseMode = tgbotapi.ModeMarkdown
 
 	sent, err := b.botAPI.Send(msg)
 	if err != nil {

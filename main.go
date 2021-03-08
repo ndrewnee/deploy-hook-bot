@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -9,7 +11,14 @@ import (
 
 	"github.com/ndrewnee/deploy-hook-bot/bot"
 	"github.com/ndrewnee/deploy-hook-bot/config"
+	"github.com/ndrewnee/deploy-hook-bot/models"
 )
+
+const msgTemplate = `[Build](https://dashboard.heroku.com/apps/%s/activity/builds/%s)
+App: %s
+Commit: %s
+Status: %s
+Published at: %s`
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
@@ -21,14 +30,38 @@ func main() {
 	}
 
 	http.HandleFunc("/hooks", func(w http.ResponseWriter, r *http.Request) {
-		bytes, _ := ioutil.ReadAll(r.Body)
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			log.Printf("[ERROR] Read request body failed: %s", err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
 
-		log.Printf("Request body:\n%s", bytes)
+		var hook models.HookAPIBuild
 
-		// var hook models.Hook
-		// json.Unmarshal(bytes, &hook)
+		if err := json.Unmarshal(body, &hook); err != nil {
+			log.Printf("[ERROR] Unmarshal request body failed: %s. Body: %s\n", err, body)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
 
-		tgbot.SendMessage(string(bytes))
+		text := fmt.Sprintf(
+			msgTemplate,
+			hook.Data.App.Name,
+			hook.Data.ID,
+			hook.Data.App.Name,
+			hook.Data.Slug.Commit,
+			hook.Data.Status,
+			hook.PublishedAt,
+		)
+
+		if _, err := tgbot.SendMessage(text); err != nil {
+			log.Printf("[ERROR] Send message to telegram failed: %s", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		w.WriteHeader(http.StatusNoContent)
 	})
 
 	if err := http.ListenAndServe(config.Address, nil); err != nil {
