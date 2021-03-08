@@ -13,7 +13,7 @@
         },
         "user": {
             "id": "3e74312b-09b6-49f1-aefc-607f7069b369",
-            "email": "ndrewnee@gmail.com"
+            "email": "user@example.com"
         },
         "stack": "heroku-20",
         "status": "succeeded",
@@ -28,17 +28,11 @@
             }
         ],
         "created_at": "2021-03-08T06:43:08Z",
-        "updated_at": "2021-03-08T06:43:46Z",
-        "source_blob": {
-            "url": "https://s3-external-1.amazonaws.com/heroku-sources-production/5ac3b442-bbef-4771-a31a-ac307f523927?AWSAccessKeyId=AKIAJ6LKZGKGPARPZE4A&Signature=7k79gPuKaHO2ZavYCIhdwScJkug%3D&Expires=1615189387",
-            "version": "53e36e65992352df09ac6610364a288239e11cb4",
-            "checksum": "SHA256:e8d4946b9ced2c74826133fbac7ba162f5913cd8426cf36cd5d684ed97fa67c8"
-        },
-        "output_stream_url": "https://build-output.heroku.com/streams/4f/4fc9a48e-f8fa-412e-acf1-cdafdd2674e6/logs/3e/3e3572d2-3584-4b30-933a-8837177767ef.log?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIQI6BAUWXGR4S77Q%2F20210308%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20210308T064346Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=5fcf3b81b630fc045c5be387695915d532c66ceea63d905b48602b660679d3cc"
+        "updated_at": "2021-03-08T06:43:46Z"
     },
     "actor": {
         "id": "3e74312b-09b6-49f1-aefc-607f7069b369",
-        "email": "ndrewnee@gmail.com"
+        "email": "user@example.com"
     },
     "action": "update",
     "version": "application/vnd.heroku+json; version=3",
