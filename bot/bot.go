@@ -98,3 +98,20 @@ func (b *Bot) GetUpdatesChan() (tgbotapi.UpdatesChannel, error) {
 
 	return updates, nil
 }
+
+func (b *Bot) SendMessage(text string) (tgbotapi.Message, error) {
+	chatID := int64(3923963)
+
+	msg := tgbotapi.NewMessage(chatID, text)
+
+	sent, err := b.botAPI.Send(msg)
+	if err != nil {
+		errMsg := msg
+		errMsg.Text = "Oops, something went wrong!"
+		_, _ = b.botAPI.Send(errMsg)
+
+		return tgbotapi.Message{}, fmt.Errorf("send message failed: %s. Text: \n%s", err, msg.Text)
+	}
+
+	return sent, nil
+}

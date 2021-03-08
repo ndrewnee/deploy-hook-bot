@@ -98,5 +98,5 @@ make deploy
 | TOKEN        | String  | Telegram bot access token     |                                       |
 | DEBUG        | Boolean | Enable debug mode             | false                                 |
 | WEBHOOK      | Boolean | Enable webhook mode           | false                                 |
-| PORT         | String  | Port for webhook              | 9999                                  |
+| PORT         | String  | Port for webhook              | 9998                                  |
 | WEBHOOK_HOST | String  | Webhook host for telegram bot | https://deploy-hook-bot.herokuapp.com |

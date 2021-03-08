@@ -16,7 +16,7 @@ type Config struct {
 func ParseConfig() Config {
 	port, err := strconv.Atoi(os.Getenv("PORT"))
 	if err != nil {
-		port = 9999
+		port = 9998
 	}
 
 	webhookHost := os.Getenv("WEBHOOK_HOST")
