@@ -91,11 +91,15 @@ func TestServer_HooksHandler(t *testing.T) {
 			},
 			status: http.StatusOK,
 			want: models.HookResponse{
-				Message: `[Build](https://dashboard.heroku.com/apps/lesswrong-bot/activity/builds/3e3572d2-3584-4b30-933a-8837177767ef)
-App: lesswrong-bot
-Commit: 53e36e65992352df09ac6610364a288239e11cb4
-Status: succeeded
-Published at: 2021-03-08 06:43:46 +0000 UTC`,
+				Message: `🛠 [Build](https://dashboard.heroku.com/apps/lesswrong-bot/activity/builds/3e3572d2-3584-4b30-933a-8837177767ef)
+
+*App*: lesswrong-bot
+
+*Commit*: 53e36e65992352df09ac6610364a288239e11cb4
+
+*Status*: succeeded
+
+*Published*: 2021-03-08 11:43:46`,
 			},
 		},
 	}

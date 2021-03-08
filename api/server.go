@@ -12,11 +12,19 @@ import (
 	"github.com/ndrewnee/deploy-hook-bot/models"
 )
 
-const MsgTemplate = `[Build](https://dashboard.heroku.com/apps/%s/activity/builds/%s)
-App: %s
-Commit: %s
-Status: %s
-Published at: %s`
+const (
+	MsgTemplate = `🛠 [Build](https://dashboard.heroku.com/apps/%s/activity/builds/%s)
+
+*App*: %s
+
+*Commit*: %s
+
+*Status*: %s
+
+*Published*: %s`
+
+	DateLayout = "2006-01-02 15:04:05"
+)
 
 type Server struct {
 	config config.Config
@@ -75,7 +83,7 @@ func (s *Server) HooksHandler(w http.ResponseWriter, r *http.Request) {
 		hook.Data.App.Name,
 		hook.Data.Slug.Commit,
 		hook.Data.Status,
-		hook.PublishedAt,
+		hook.PublishedAt.In(s.config.Location).Format(DateLayout),
 	)
 
 	if _, err := s.tgbot.SendMessage(text); err != nil {
