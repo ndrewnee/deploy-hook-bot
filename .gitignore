@@ -4,7 +4,7 @@
 *.dll
 *.so
 *.dylib
-lesswrong-bot
+deploy-hook-bot
 
 # Test binary, built with `go test -c`
 *.test

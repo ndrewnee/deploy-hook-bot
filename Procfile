@@ -1,1 +1,1 @@
-web: bin/lesswrong-bot
+web: bin/deploy-hook-bot
