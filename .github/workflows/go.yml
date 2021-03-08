@@ -1,0 +1,64 @@
+name: Go
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-20.04
+
+    # Service containers to run with `test`
+    services:
+      # Label used to access the service container
+      redis:
+        # Docker Hub image
+        image: redis
+        # Set health checks to wait until redis has started
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps port 6379 on service container to the host
+          - 6379:6379
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15
+
+      - name: Run integration tests
+        run: make test_integration
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
+          TEST_CHAT_ID: ${{ secrets.TEST_CHAT_ID }}
+          TEST_USER_ID: ${{ secrets.TEST_USER_ID }}
+          TEST_USE_REDIS: ${{ secrets.TEST_USE_REDIS }}
+
+  golangci-lint:
+    name: Lint
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15
+
+      - name: Lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.37
+          skip-go-installation: true
