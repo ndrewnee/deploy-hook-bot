@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/ndrewnee/deploy-hook-bot/bot"
+	"github.com/ndrewnee/deploy-hook-bot/config"
 	"github.com/ndrewnee/deploy-hook-bot/models"
 )
 
@@ -18,14 +19,16 @@ Status: %s
 Published at: %s`
 
 type Server struct {
-	mux   *http.ServeMux
-	tgbot *bot.Bot
+	config config.Config
+	tgbot  *bot.Bot
+	mux    *http.ServeMux
 }
 
-func NewServer(tgbot *bot.Bot) *Server {
+func NewServer(config config.Config, tgbot *bot.Bot) *Server {
 	server := &Server{
-		mux:   http.NewServeMux(),
-		tgbot: tgbot,
+		config: config,
+		tgbot:  tgbot,
+		mux:    http.NewServeMux(),
 	}
 
 	server.mux.HandleFunc("/hooks", server.HooksHandler)
@@ -38,6 +41,13 @@ func (s *Server) Mux() *http.ServeMux {
 }
 
 func (s *Server) HooksHandler(w http.ResponseWriter, r *http.Request) {
+	auth := r.Header.Get("Authorization")
+
+	if s.config.AuthToken != "" && auth != "Bearer "+s.config.AuthToken {
+		writeResponse(w, http.StatusForbidden, models.HookResponse{Error: "Authorization is invalid"})
+		return
+	}
+
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("[ERROR] Read request body failed: %s", err)

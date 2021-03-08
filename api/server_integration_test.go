@@ -11,20 +11,24 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/ndrewnee/deploy-hook-bot/bot"
+	"github.com/ndrewnee/deploy-hook-bot/config"
 	"github.com/ndrewnee/deploy-hook-bot/models"
 )
 
 func TestServer_HooksHandler(t *testing.T) {
+	config := config.Parse()
+
 	tgbot, err := bot.New()
 	require.NoError(t, err)
 
-	server := NewServer(tgbot)
+	server := NewServer(config, tgbot)
 
 	ts := httptest.NewServer(server.Mux())
 	defer ts.Close()
 
 	type args struct {
-		body []byte
+		authToken string
+		body      []byte
 	}
 
 	tests := []struct {
@@ -34,9 +38,21 @@ func TestServer_HooksHandler(t *testing.T) {
 		want   models.HookResponse
 	}{
 		{
+			name: "Should fail because auth token is not valid",
+			args: args{
+				body:      []byte("{}"),
+				authToken: "invalid",
+			},
+			status: http.StatusForbidden,
+			want: models.HookResponse{
+				Error: "Authorization is invalid",
+			},
+		},
+		{
 			name: "Should fail because body is invalid",
 			args: args{
-				body: []byte("invalid"),
+				body:      []byte("invalid"),
+				authToken: config.AuthToken,
 			},
 			status: http.StatusBadRequest,
 			want: models.HookResponse{
@@ -46,14 +62,16 @@ func TestServer_HooksHandler(t *testing.T) {
 		{
 			name: "Should get no content because action is not update",
 			args: args{
-				body: []byte("{}"),
+				body:      []byte("{}"),
+				authToken: config.AuthToken,
 			},
 			status: http.StatusNoContent,
 		},
 		{
 			name: "Should fail because send message to telegram failed",
 			args: args{
-				body: []byte(`{"action":"update","data":{"status":"[invalid"}}`),
+				body:      []byte(`{"action":"update","data":{"status":"[invalid"}}`),
+				authToken: config.AuthToken,
 			},
 			status: http.StatusInternalServerError,
 			want: models.HookResponse{
@@ -69,6 +87,7 @@ func TestServer_HooksHandler(t *testing.T) {
 
 					return file
 				}(),
+				authToken: config.AuthToken,
 			},
 			status: http.StatusOK,
 			want: models.HookResponse{
@@ -83,7 +102,15 @@ Published at: 2021-03-08 06:43:46 +0000 UTC`,
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			response, err := http.Post(ts.URL+"/hooks", "application/json", bytes.NewBuffer(tt.args.body))
+			req, err := http.NewRequest(http.MethodPost, ts.URL+"/hooks", bytes.NewBuffer(tt.args.body))
+			require.NoError(t, err)
+
+			req.Header.Set("Content-Type", "application/json")
+			if tt.args.authToken != "" {
+				req.Header.Set("Authorization", "Bearer "+tt.args.authToken)
+			}
+
+			response, err := http.DefaultClient.Do(req)
 			require.NoError(t, err)
 			require.Equal(t, tt.status, response.StatusCode)
 

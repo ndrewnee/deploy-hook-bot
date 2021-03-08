@@ -73,8 +73,9 @@ brew install heroku/brew/heroku
 heroku login
 heroku create deploy-hook-bot
 heroku config:set TOKEN=<token>
+heroku config:set AUTH_TOKEN=<auth_token>
 heroku config:set TELEGRAM_CHAT_ID=<chat_id>
-heroku webhooks:add -i api:build -l notify -u https://deploy-hook-bot.herokuapp.com/hooks # To add deploy hook
+heroku webhooks:add -i api:build -l notify -u https://deploy-hook-bot.herokuapp.com/hooks -t <auth_token># To add deploy hook
 
 git push heroku main
 ```
@@ -91,5 +92,6 @@ make deploy
 | ---------------- | ------- | ------------------------- | ------- |
 | PORT             | String  | Port for server           | 9998    |
 | TOKEN            | String  | Telegram bot access token |         |
+| AUTH_TOKEN       | String  | Authorization token       |         |
 | TELEGRAM_CHAT_ID | Integer | Telegram chat id          |         |
 | DEBUG            | Boolean | Enable debug mode         | false   |

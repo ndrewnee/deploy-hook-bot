@@ -9,11 +9,12 @@ import (
 type Config struct {
 	Address        string
 	Token          string
+	AuthToken      string
 	TelegramChatID int64
 	Debug          bool
 }
 
-func ParseConfig() Config {
+func Parse() Config {
 	port, err := strconv.Atoi(os.Getenv("PORT"))
 	if err != nil {
 		port = 9998
@@ -27,6 +28,7 @@ func ParseConfig() Config {
 	return Config{
 		Address:        ":" + strconv.Itoa(port),
 		Token:          os.Getenv("TOKEN"),
+		AuthToken:      os.Getenv("AUTH_TOKEN"),
 		TelegramChatID: chatID,
 		Debug:          os.Getenv("DEBUG") == "true",
 	}

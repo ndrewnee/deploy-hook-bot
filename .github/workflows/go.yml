@@ -24,6 +24,7 @@ jobs:
         run: make test_integration
         env:
           TOKEN: ${{ secrets.TOKEN }}
+          AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
 
   golangci-lint:

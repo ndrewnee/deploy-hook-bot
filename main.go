@@ -10,14 +10,14 @@ import (
 )
 
 func main() {
-	config := config.ParseConfig()
+	config := config.Parse()
 
 	tgbot, err := bot.New(bot.Options{Config: config})
 	if err != nil {
 		log.Fatal("Init telegram bot failed: ", err)
 	}
 
-	server := api.NewServer(tgbot)
+	server := api.NewServer(config, tgbot)
 
 	if err := http.ListenAndServe(config.Address, server.Mux()); err != nil {
 		log.Printf("[ERROR] Listen and serve failed: %s", err)

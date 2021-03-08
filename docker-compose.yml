@@ -6,5 +6,6 @@ services:
       context: .
     environment:
       - TOKEN
+      - AUTH_TOKEN
       - TELEGRAM_CHAT_ID
     restart: always
