@@ -13,8 +13,8 @@ Take bot access token.
 Before running copy sample file and replace env vars with your credentials
 
 ```sh
-cp .env.dev.sample .env.dev
-source .env.dev
+cp .env.sample .env
+source .env
 ```
 
 Run application locally:
@@ -45,14 +45,7 @@ Run unit tests
 make test
 ```
 
-Before running tests copy example env file and replace env vars with your credentials
-
-```sh
-cp .env.test.sample .env.test
-source .env.test
-```
-
-and then run integration tests
+Run integration tests
 
 ```sh
 make test_integration
@@ -78,9 +71,10 @@ To deploy your app on Heroku read [documentation](https://devcenter.heroku.com/a
 brew install heroku/brew/heroku
 
 heroku login
-heroku create <app-name>
-heroku config:set WEBHOOK=true
+heroku create deploy-hook-bot
 heroku config:set TOKEN=<token>
+heroku config:set TELEGRAM_CHAT_ID=<chat_id>
+heroku webhooks:add -i api:build -l notify -u https://deploy-hook-bot.herokuapp.com/hooks # To add deploy hook
 
 git push heroku main
 ```
@@ -93,10 +87,9 @@ make deploy
 
 ## 🛠 Environment variables
 
-| Env var      | Type    | Description                   | Default                               |
-| ------------ | ------- | ----------------------------- | ------------------------------------- |
-| TOKEN        | String  | Telegram bot access token     |                                       |
-| DEBUG        | Boolean | Enable debug mode             | false                                 |
-| WEBHOOK      | Boolean | Enable webhook mode           | false                                 |
-| PORT         | String  | Port for webhook              | 9998                                  |
-| WEBHOOK_HOST | String  | Webhook host for telegram bot | https://deploy-hook-bot.herokuapp.com |
+| Env var          | Type    | Description               | Default |
+| ---------------- | ------- | ------------------------- | ------- |
+| PORT             | String  | Port for server           | 9998    |
+| TOKEN            | String  | Telegram bot access token |         |
+| TELEGRAM_CHAT_ID | Integer | Telegram chat id          |         |
+| DEBUG            | Boolean | Enable debug mode         | false   |

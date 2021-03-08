@@ -3,7 +3,6 @@ package bot
 import (
 	"fmt"
 	"log"
-	"net/http"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 
@@ -51,58 +50,8 @@ func New(options ...Options) (*Bot, error) {
 	}, nil
 }
 
-func (b *Bot) GetUpdatesChan() (tgbotapi.UpdatesChannel, error) {
-	if b.config.Webhook {
-		webhook := tgbotapi.NewWebhook(b.config.WebhookHost + "/" + b.botAPI.Token)
-
-		if _, err := b.botAPI.SetWebhook(webhook); err != nil {
-			return nil, fmt.Errorf("set webhook failed: %s", err)
-		}
-
-		info, err := b.botAPI.GetWebhookInfo()
-		if err != nil {
-			return nil, fmt.Errorf("get webhook info failed: %s", err)
-		}
-
-		if info.LastErrorDate != 0 {
-			log.Printf("[ERROR] Telegram callback failed: %s", info.LastErrorMessage)
-		}
-
-		updates := b.botAPI.ListenForWebhook("/" + b.botAPI.Token)
-
-		go func() {
-			if err := http.ListenAndServe(b.config.Address, nil); err != nil {
-				log.Printf("[ERROR] Listen and serve failed: %s", err)
-			}
-		}()
-
-		return updates, nil
-	}
-
-	response, err := b.botAPI.RemoveWebhook()
-	if err != nil {
-		return nil, fmt.Errorf("removed webhook failed: %s", err)
-	}
-
-	if !response.Ok {
-		return nil, fmt.Errorf("remove webhook response contains error: %s", response.Description)
-	}
-
-	u := tgbotapi.NewUpdate(0)
-	u.Timeout = 60
-
-	updates, err := b.botAPI.GetUpdatesChan(u)
-	if err != nil {
-		return nil, fmt.Errorf("get updates chan failed: %s", err)
-	}
-
-	return updates, nil
-}
-
 func (b *Bot) SendMessage(text string) (tgbotapi.Message, error) {
-	chatID := int64(3923963)
-
-	msg := tgbotapi.NewMessage(chatID, text)
+	msg := tgbotapi.NewMessage(b.config.TelegramChatID, text)
 	msg.ParseMode = tgbotapi.ModeMarkdown
 
 	sent, err := b.botAPI.Send(msg)

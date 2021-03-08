@@ -16,5 +16,5 @@ FROM alpine:3.13
 RUN apk add --no-cache ca-certificates tzdata
 COPY --from=builder /app/deploy-hook-bot .
 
-EXPOSE 9999
+EXPOSE 9998
 ENTRYPOINT ["./deploy-hook-bot"]

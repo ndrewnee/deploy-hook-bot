@@ -1,16 +1,16 @@
 package config
 
 import (
+	"log"
 	"os"
 	"strconv"
 )
 
 type Config struct {
-	Address     string
-	Token       string
-	WebhookHost string
-	Webhook     bool
-	Debug       bool
+	Address        string
+	Token          string
+	TelegramChatID int64
+	Debug          bool
 }
 
 func ParseConfig() Config {
@@ -19,16 +19,15 @@ func ParseConfig() Config {
 		port = 9998
 	}
 
-	webhookHost := os.Getenv("WEBHOOK_HOST")
-	if webhookHost == "" {
-		webhookHost = "https://deploy-hook-bot.herokuapp.com"
+	chatID, err := strconv.ParseInt(os.Getenv("TELEGRAM_CHAT_ID"), 10, 64)
+	if err != nil {
+		log.Printf("[WARN] Env variable TELEGRAM_CHAT_ID is not set: %s", err)
 	}
 
 	return Config{
-		Address:     ":" + strconv.Itoa(port),
-		WebhookHost: webhookHost,
-		Token:       os.Getenv("TOKEN"),
-		Webhook:     os.Getenv("WEBHOOK") == "true",
-		Debug:       os.Getenv("DEBUG") == "true",
+		Address:        ":" + strconv.Itoa(port),
+		Token:          os.Getenv("TOKEN"),
+		TelegramChatID: chatID,
+		Debug:          os.Getenv("DEBUG") == "true",
 	}
 }
